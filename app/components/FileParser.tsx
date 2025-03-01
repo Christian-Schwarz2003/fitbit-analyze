@@ -41,7 +41,6 @@ const FileParser = ({
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log("file", file);
     if (!file) {
       console.log("No file");
       setRouteData([]);
@@ -120,11 +119,8 @@ const FileParser = ({
     });
   }, []);
   useEffect(() => {
-    console.log(xmlContent);
     if (xmlContent) {
-      const temp = processXml(xmlContent);
-      console.log(temp);
-      setRouteData(temp);
+      setRouteData(processXml(xmlContent));
     } else {
       setRouteData([]);
     }
