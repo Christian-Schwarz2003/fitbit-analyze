@@ -13,7 +13,7 @@ const Explainer = () => {
         How to use and general Information: {isOpen ? "▲" : "▼"}
       </h2>
       <Collapse isOpened={isOpen}>
-      <h3>How to use</h3>
+      <h3 style={{textAlign: "center", marginBottom: "1rem"}}>How to use</h3>
         <p style={{textAlign: "center", marginBottom: "1rem"}}>
           To get started upload a .tcs file. You get this by clicking the 3 dots
           at the top of the workout in the Fitbit app and then selecting the
@@ -30,7 +30,7 @@ const Explainer = () => {
           To switch the graph to feet for altitude select imperial at the top of
           the page
         </p>
-        <h3>General Information</h3>
+        <h3 style={{textAlign: "center", marginBottom: "1rem"}}>General Information</h3>
         <p style={{textAlign: "center", marginBottom: "1rem"}}>
           The code is fully open source on my{" "}
           <Link
