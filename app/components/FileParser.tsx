@@ -17,15 +17,16 @@ type Trackpoint = {
   };
 };
 
+type Lap = {
+  Track?: {
+    Trackpoint?: Trackpoint[];
+  };
+};
 type TcsFormat = {
   TrainingCenterDatabase?: {
     Activities?: {
       Activity?: {
-        Lap?: {
-          Track?: {
-            Trackpoint?: Trackpoint[];
-          };
-        };
+        Lap?: Lap | Lap[];
       };
     };
   };
@@ -40,7 +41,9 @@ const FileParser = ({
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    console.log("file", file);
     if (!file) {
+      console.log("No file");
       setRouteData([]);
       return;
     }
@@ -66,9 +69,27 @@ const FileParser = ({
   };
 
   const processXml = useCallback((xmlContent: TcsFormat): RoutePoint[] => {
-    const trackPoints: Trackpoint[] =
-      xmlContent?.TrainingCenterDatabase?.Activities?.Activity?.Lap?.Track
-        ?.Trackpoint || [];
+    const laps: Lap | Lap[] =
+      xmlContent?.TrainingCenterDatabase?.Activities?.Activity?.Lap || [];
+    let singlelap: Lap = {
+      Track: {
+        Trackpoint: [],
+      },
+    };
+    if (Array.isArray(laps)) {
+      if (laps.length > 0) {
+        laps.forEach((lap) => {
+          singlelap.Track?.Trackpoint?.push(...(lap.Track?.Trackpoint || []));
+        });
+      }
+    } else {
+      singlelap = laps;
+    }
+
+    const trackPoints: Trackpoint[] = singlelap.Track?.Trackpoint || [];
+    if (trackPoints.length === 0) {
+      alert("Could not find any trackpoints");
+    }
 
     return trackPoints.map((point, index) => {
       let speed: number = 0;
@@ -99,8 +120,11 @@ const FileParser = ({
     });
   }, []);
   useEffect(() => {
+    console.log(xmlContent);
     if (xmlContent) {
-      setRouteData(processXml(xmlContent));
+      const temp = processXml(xmlContent);
+      console.log(temp);
+      setRouteData(temp);
     } else {
       setRouteData([]);
     }
